@@ -1,40 +1,19 @@
 import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Store } from "../store/contextProvider";
+
 function Login() {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const { handleLogin } = useContext(Store);
   const [input, setInput] = useState({ email: "", password: "" });
 
-  // let history = useHistory();
-  const handleLogin = async ({ email, password }) => {
-    if (!email || !password) {
-      console.error("Each field is required");
-      return;
-    }
-    const response = await fetch(`http://localhost:3000/user/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        // Add any other headers here
-      },
-      body: JSON.stringify({ email, password }), // body data type must match "Content-Type" header
-    });
-
-    const data = await response.json();
-    // console.log(`fffffffff`,data)
-    if (response.ok) {
-      localStorage.setItem("accessToken", data.data.accessToken);
-      navigate("/app/notes")
-    } else {
-      alert(`Invalid Credential`);
-    }
-  };
   const onChange = (e) => {
     setInput({ ...input, [e.target.name]: e.target.value });
   };
 
   const login = (e) => {
     e.preventDefault();
-    handleLogin(input);
+    handleLogin(input, navigate);
   };
 
   return (
