@@ -1,7 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
-
-import LoadingBar from "react-top-loading-bar"; // Import react-top-loading-bar
+import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../store/contextProvider";
 function Register() {
   let { loadingBarRef } = useContext(Store);
@@ -136,9 +134,9 @@ function Register() {
             </button>
             <div className="text-white text-center mt-5">
               If You not have Account?{" "}
-              <a className="hover:underline" href="/login">
+              <Link className="hover:underline" to="/login">
                 Login
-              </a>
+              </Link>
             </div>
           </form>
         </div>

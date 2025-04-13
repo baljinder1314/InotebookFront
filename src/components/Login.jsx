@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../store/contextProvider";
 
 function Login() {
@@ -63,9 +63,9 @@ function Login() {
             </button>
             <div className="text-white text-center mt-5">
               If You not have Account?{" "}
-              <a className="hover:underline" href="/register">
+              <Link className="hover:underline" to="/register">
                 Register
-              </a>
+              </Link>
             </div>
           </form>
         </div>
