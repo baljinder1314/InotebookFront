@@ -4,6 +4,7 @@ import LoadingBar from "react-top-loading-bar"; // Import react-top-loading-bar
 export const Store = createContext();
 
 function ContextProvider({ children }) {
+  const [errorData, setErrorData] = useState("");
   const [responseData, setResponseData] = useState(null);
   const [notesData, setNotesData] = useState(null); // State to store fetched notes
   const localStoreValue = localStorage.getItem("accessToken");
@@ -55,7 +56,7 @@ function ContextProvider({ children }) {
 
         navigate("/app/notes");
       } else {
-        alert("Invalid Credential");
+        setErrorData(data.user)
       }
     } catch (error) {
       console.error("Error during login:", error.message);
@@ -103,7 +104,7 @@ function ContextProvider({ children }) {
       }
     } catch (error) {
       console.error("Error while adding note:", error.message);
-    }finally{
+    } finally {
       loadingBarRef.current.complete();
     }
   };
@@ -129,8 +130,7 @@ function ContextProvider({ children }) {
       }
     } catch (error) {
       console.log("Error while Fetching notes: ", error.message);
-    }
-    finally{
+    } finally {
       loadingBarRef.current.complete();
     }
   };
@@ -162,8 +162,7 @@ function ContextProvider({ children }) {
       }
     } catch (error) {
       console.error("Error while deleting note:", error.message);
-    }
-    finally{
+    } finally {
       loadingBarRef.current.continuousStart();
     }
   };
@@ -238,7 +237,9 @@ function ContextProvider({ children }) {
           setInputData,
           updateNote,
           handleAddToGetInput,
-          loadingBarRef
+          loadingBarRef,
+          errorData,
+          setErrorData
         }}
       >
         {children}

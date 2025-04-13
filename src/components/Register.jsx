@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../store/contextProvider";
 function Register() {
-  let { loadingBarRef } = useContext(Store);
+  let { loadingBarRef,setErrorData,errorData } = useContext(Store);
   let navigate = useNavigate();
   const [inputData, setInputData] = useState({
     username: "",
@@ -13,7 +13,7 @@ function Register() {
 
   const handleLogin = async ({ username, email, password, photo }) => {
     if (!email || !password || !username || !photo) {
-      console.error("Each field is required");
+      setErrorData("Each Fields is required")
       return;
     }
 
@@ -30,12 +30,12 @@ function Register() {
       });
 
       const data = await response.json();
+      console.error("Registration failed:", data);
 
       if (response.ok) {
         navigate("/login");
         // Redirect or handle success here
       } else {
-        console.error("Registration failed:", data.message);
       }
     } catch (error) {
       console.error("Error during registration:", error.message);
@@ -126,6 +126,7 @@ function Register() {
               onChange={onChange}
               className="text-white font-semibold placeholder:text-white border py-2 px-5 mb-3 mt-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
+            <p className="text-base text-red-700 font-semibold ml-4">{errorData}</p>
             <button
               type="submit"
               className="mt-4 border cursor-pointer text-xl font-semibold  hover:bg-indigo-700 hover:border-none text-white py-2 px-4 rounded-xl transition duration-200"

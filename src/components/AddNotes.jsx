@@ -12,7 +12,7 @@ function AddNotes() {
   const handleAddToGetInput = async (e) => {
     e.preventDefault(); // Fixed typo
     addNotes(inputData, navigate); // Log input values
-    
+
     // Add logic to send data to the backend or handle it as needed
   };
 
@@ -67,7 +67,7 @@ function AddNotes() {
               required
               value={inputData.desc}
               placeholder="Enter description here"
-              className="absolute z-10 w-full mt-33 sm:mt-40 sm:px-20 sm:py-4 sm:placeholder:text-2xl sm:placeholder:text-white sm:text-2xl min-h-50 border-white text-white border-t-2 border-b-2 text-xl px-6 py-3"
+              className="absolute z-10 w-full mt-33 sm:mt-40 sm:px-20 sm:py-4 sm:placeholder:text-2xl sm:placeholder:text-white sm:text-2xl min-h-[20rem] border-white text-white border-t-2 border-b-2 text-xl px-6 py-3"
             ></textarea>
           </div>
         </form>

@@ -4,7 +4,7 @@ import { Store } from "../store/contextProvider";
 
 function Login() {
   const navigate = useNavigate();
-  const { handleLogin } = useContext(Store);
+  const { handleLogin,errorData } = useContext(Store);
   const [input, setInput] = useState({ email: "", password: "" });
 
   const onChange = (e) => {
@@ -54,6 +54,7 @@ function Login() {
               id="password"
               placeholder="password"
             />
+            <p className="text-base text-red-700 font-semibold ml-4">{errorData}</p>
             <button
               onClick={login}
               type="submit"
