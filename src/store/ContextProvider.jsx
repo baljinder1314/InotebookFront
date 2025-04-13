@@ -4,6 +4,14 @@ export const Store = createContext();
 
 function ContextProvider({ children }) {
   const [responseData, setResponseData] = useState(null);
+  const [notesData, setNotesData] = useState(null); // State to store fetched notes
+  const localStoreValue = localStorage.getItem("accessToken");
+  const [inputData1, setInputData] = useState({
+    id: "",
+    title: "",
+    tags: "",
+    description: "",
+  });
 
   useEffect(() => {
     // Retrieve localStorage values and set them in responseData
@@ -15,6 +23,10 @@ function ContextProvider({ children }) {
       setResponseData({ localUsername, localEmail, localPhoto });
     }
   }, []); // Run only once when the component mounts
+
+  useEffect(() => {
+    // Log whenever inputData1 changes
+  }, [inputData1]);
 
   const handleLogin = async ({ email, password }, navigate) => {
     if (!email || !password) {
@@ -39,8 +51,6 @@ function ContextProvider({ children }) {
         localStorage.setItem("email", data.data.user.email);
         localStorage.setItem("photo", data.data.user.photo);
 
-
-        // setResponseData({ localUsername, localEmail, localPhoto });
         navigate("/app/notes");
       } else {
         alert("Invalid Credential");
@@ -51,7 +61,6 @@ function ContextProvider({ children }) {
   };
 
   const hanldeLogout = async (navigate) => {
-    const localStoreValue = localStorage.getItem("accessToken");
     await fetch("http://localhost:3000/user/logout", {
       method: "POST",
       headers: {
@@ -63,13 +72,141 @@ function ContextProvider({ children }) {
     localStorage.removeItem("username");
     localStorage.removeItem("email");
     localStorage.removeItem("photo");
-    // localStorage.removeItem("userDetails");
     setResponseData(null); // Clear responseData on logout
     navigate("/login");
   };
 
+  const addNotes = async ({ title, tags, desc }, navigate) => {
+    try {
+      const response = await fetch(`http://localhost:3000/user/addNotes`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStoreValue,
+        },
+        body: JSON.stringify({ title, tags, description: desc }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        navigate("/app/notes"); // Navigate to /app/notes on success
+      } else {
+        console.error("Failed to add note:", data.message || "Unknown error");
+      }
+    } catch (error) {
+      console.error("Error while adding note:", error.message);
+    }
+  };
+
+  const fetchNotes = async () => {
+    try {
+      const response = await fetch(`http://localhost:3000/user/fetchNotes`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStoreValue,
+        },
+      });
+      let data = await response.json();
+      if (response.ok) {
+        setNotesData((notesData) => data); // Update notesData with fetched notes
+      } else {
+        console.error(
+          "Failed to fetch notes:",
+          data.message || "Unknown error"
+        );
+      }
+    } catch (error) {
+      console.log("Error while Fetching notes: ", error.message);
+    }
+  };
+
+  const deleteNotes = async (id) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/user/deleteNotes/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStoreValue,
+          },
+        }
+      );
+
+      if (response.ok) {
+        setNotesData((prevNotes) =>
+          prevNotes.filter((item) => item._id !== id)
+        ); // Remove the item with the specified id
+      } else {
+        const data = await response.json();
+        console.error(
+          "Failed to delete note:",
+          data.message || "Unknown error"
+        );
+      }
+    } catch (error) {
+      console.error("Error while deleting note:", error.message);
+    }
+  };
+
+  const updateNote = async (item, navigate) => {
+    console.log(item);
+    setInputData({
+      id: item._id,
+      title: item.title,
+      description: item.description,
+      tags: item.tags,
+    });
+    navigate("/update");
+  };
+  const handleAddToGetInput = async (e, navigate) => {
+    e.preventDefault(); // Prevent default form submission behavior
+    setInputData({
+      title: inputData1.title,
+      description: inputData1.description,
+      tags: inputData1.tags,
+    });
+    console.log(`updated value: `, inputData1);
+
+    const response = await fetch(
+      `http://localhost:3000/user/updateNotes/${inputData1.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStoreValue,
+        },
+        body: JSON.stringify({
+          title: inputData1.title,
+          description: inputData1.description,
+          tags: inputData1.tags,
+        }),
+      }
+    );
+    let data = await response.json();
+    if (response.ok) {
+      console.log(data);
+      navigate("/app/notes");
+    }
+  };
   return (
-    <Store.Provider value={{ handleLogin, responseData, hanldeLogout }}>
+    <Store.Provider
+      value={{
+        handleLogin,
+        responseData,
+        hanldeLogout,
+        addNotes,
+        notesData, // Pass notesData into context
+        fetchNotes,
+        deleteNotes,
+        inputData1,
+        setInputData,
+        updateNote,
+        handleAddToGetInput,
+      }}
+    >
       {children}
     </Store.Provider>
   );

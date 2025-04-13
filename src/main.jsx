@@ -9,11 +9,13 @@ import Login from "./components/Login.jsx";
 import ItemContainer from "./components/ItemContainer.jsx";
 import AddNotes from "./components/AddNotes.jsx";
 import ContextProvider from "./store/contextProvider.jsx";
+import UpdateNote from "./components/UpdateNote.jsx";
 const router = createBrowserRouter([
   { path: "/register", element: <Register /> },
   { path: "/login", element: <Login /> },
   { path: "/add", element: <AddNotes /> },
- 
+  { path: "/update", element: <UpdateNote /> },
+
   {
     path: "/app",
     element: <App />,
