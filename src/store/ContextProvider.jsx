@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useRef } from "react";
+import LoadingBar from "react-top-loading-bar"; // Import react-top-loading-bar
 
 export const Store = createContext();
 
@@ -12,6 +13,7 @@ function ContextProvider({ children }) {
     tags: "",
     description: "",
   });
+  const loadingBarRef = useRef(null); // Ref for the loading bar
 
   useEffect(() => {
     // Retrieve localStorage values and set them in responseData
@@ -33,7 +35,7 @@ function ContextProvider({ children }) {
       console.error("Each field is required");
       return;
     }
-
+    loadingBarRef.current.continuousStart();
     try {
       const response = await fetch(`http://localhost:3000/user/login`, {
         method: "POST",
@@ -57,10 +59,13 @@ function ContextProvider({ children }) {
       }
     } catch (error) {
       console.error("Error during login:", error.message);
+    } finally {
+      loadingBarRef.current.complete();
     }
   };
 
   const hanldeLogout = async (navigate) => {
+    loadingBarRef.current.continuousStart();
     await fetch("http://localhost:3000/user/logout", {
       method: "POST",
       headers: {
@@ -73,10 +78,12 @@ function ContextProvider({ children }) {
     localStorage.removeItem("email");
     localStorage.removeItem("photo");
     setResponseData(null); // Clear responseData on logout
+    loadingBarRef.current.complete();
     navigate("/login");
   };
 
   const addNotes = async ({ title, tags, desc }, navigate) => {
+    loadingBarRef.current.continuousStart();
     try {
       const response = await fetch(`http://localhost:3000/user/addNotes`, {
         method: "POST",
@@ -96,10 +103,13 @@ function ContextProvider({ children }) {
       }
     } catch (error) {
       console.error("Error while adding note:", error.message);
+    }finally{
+      loadingBarRef.current.complete();
     }
   };
 
   const fetchNotes = async () => {
+    loadingBarRef.current.continuousStart();
     try {
       const response = await fetch(`http://localhost:3000/user/fetchNotes`, {
         method: "GET",
@@ -120,9 +130,13 @@ function ContextProvider({ children }) {
     } catch (error) {
       console.log("Error while Fetching notes: ", error.message);
     }
+    finally{
+      loadingBarRef.current.complete();
+    }
   };
 
   const deleteNotes = async (id) => {
+    loadingBarRef.current.continuousStart();
     try {
       const response = await fetch(
         `http://localhost:3000/user/deleteNotes/${id}`,
@@ -149,6 +163,9 @@ function ContextProvider({ children }) {
     } catch (error) {
       console.error("Error while deleting note:", error.message);
     }
+    finally{
+      loadingBarRef.current.continuousStart();
+    }
   };
 
   const updateNote = async (item, navigate) => {
@@ -160,6 +177,7 @@ function ContextProvider({ children }) {
     });
     navigate("/update");
   };
+
   const handleAddToGetInput = async (e, navigate) => {
     e.preventDefault(); // Prevent default form submission behavior
     setInputData({
@@ -168,45 +186,64 @@ function ContextProvider({ children }) {
       tags: inputData1.tags,
     });
 
-    const response = await fetch(
-      `http://localhost:3000/user/updateNotes/${inputData1.id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: localStoreValue,
-        },
-        body: JSON.stringify({
-          title: inputData1.title,
-          description: inputData1.description,
-          tags: inputData1.tags,
-        }),
+    loadingBarRef.current.continuousStart(); // Start the loading bar
+
+    try {
+      const response = await fetch(
+        `http://localhost:3000/user/updateNotes/${inputData1.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: localStoreValue,
+          },
+          body: JSON.stringify({
+            title: inputData1.title,
+            description: inputData1.description,
+            tags: inputData1.tags,
+          }),
+        }
+      );
+      let data = await response.json();
+
+      if (response.ok) {
+        navigate("/app/notes");
+      } else {
+        console.error(
+          "Failed to update note:",
+          data.message || "Unknown error"
+        );
       }
-    );
-    let data = await response.json();
-    if (response.ok) {
-      
-      navigate("/app/notes");
+    } catch (error) {
+      console.error("Error while updating note:", error.message);
+    } finally {
+      loadingBarRef.current.complete(); // Complete the loading bar
     }
   };
+
   return (
-    <Store.Provider
-      value={{
-        handleLogin,
-        responseData,
-        hanldeLogout,
-        addNotes,
-        notesData, // Pass notesData into context
-        fetchNotes,
-        deleteNotes,
-        inputData1,
-        setInputData,
-        updateNote,
-        handleAddToGetInput,
-      }}
-    >
-      {children}
-    </Store.Provider>
+    <>
+      <LoadingBar color="#f11946" height="3px" ref={loadingBarRef} />{" "}
+      {/* Add LoadingBar component */}
+      <Store.Provider
+        value={{
+          handleLogin,
+          responseData,
+          hanldeLogout,
+          addNotes,
+          notesData, // Pass notesData into context
+          fetchNotes,
+          deleteNotes,
+          inputData1,
+          setInputData,
+          updateNote,
+          handleAddToGetInput,
+          loadingBarRef
+        }}
+      >
+        {children}
+      </Store.Provider>
+    </>
   );
 }
 

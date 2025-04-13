@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+import LoadingBar from "react-top-loading-bar"; // Import react-top-loading-bar
+import { Store } from "../store/contextProvider";
 function Register() {
-  
+  let { loadingBarRef } = useContext(Store);
   let navigate = useNavigate();
   const [inputData, setInputData] = useState({
     username: "",
@@ -22,7 +24,7 @@ function Register() {
     formData.append("email", email);
     formData.append("password", password);
     formData.append("photo", photo); // Append the file
-
+    loadingBarRef.current.continuousStart();
     try {
       const response = await fetch(`http://localhost:3000/user/register`, {
         method: "POST",
@@ -30,21 +32,21 @@ function Register() {
       });
 
       const data = await response.json();
-      console.log(data);
 
       if (response.ok) {
-        navigate("/login")
+        navigate("/login");
         // Redirect or handle success here
       } else {
         console.error("Registration failed:", data.message);
       }
     } catch (error) {
       console.error("Error during registration:", error.message);
+    } finally {
+      loadingBarRef.current.complete();
     }
   };
 
   const onChange = (e) => {
-    console.log(e.target)
     const { name, value, files } = e.target;
     setInputData({
       ...inputData,

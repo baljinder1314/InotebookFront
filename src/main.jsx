@@ -10,6 +10,7 @@ import ItemContainer from "./components/ItemContainer.jsx";
 import AddNotes from "./components/AddNotes.jsx";
 import ContextProvider from "./store/contextProvider.jsx";
 import UpdateNote from "./components/UpdateNote.jsx";
+import { LoadingBarContainer } from "react-top-loading-bar";
 const router = createBrowserRouter([
   { path: "/register", element: <Register /> },
   { path: "/login", element: <Login /> },
