@@ -152,7 +152,6 @@ function ContextProvider({ children }) {
   };
 
   const updateNote = async (item, navigate) => {
-    console.log(item);
     setInputData({
       id: item._id,
       title: item.title,
@@ -168,7 +167,6 @@ function ContextProvider({ children }) {
       description: inputData1.description,
       tags: inputData1.tags,
     });
-    console.log(`updated value: `, inputData1);
 
     const response = await fetch(
       `http://localhost:3000/user/updateNotes/${inputData1.id}`,
@@ -187,7 +185,7 @@ function ContextProvider({ children }) {
     );
     let data = await response.json();
     if (response.ok) {
-      console.log(data);
+      
       navigate("/app/notes");
     }
   };
