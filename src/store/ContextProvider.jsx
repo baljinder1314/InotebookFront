@@ -1,7 +1,9 @@
 import React, { createContext, useState, useEffect, useRef } from "react";
 import LoadingBar from "react-top-loading-bar"; // Import react-top-loading-bar
-
 export const Store = createContext();
+
+const BACKEND_URL = import.meta.env.VITE_API_URL;
+
 
 function ContextProvider({ children }) {
   const [errorData, setErrorData] = useState("");
@@ -15,7 +17,7 @@ function ContextProvider({ children }) {
     description: "",
   });
   const loadingBarRef = useRef(null); // Ref for the loading bar
-
+  
   useEffect(() => {
     // Retrieve localStorage values and set them in responseData
     const localUsername = localStorage.getItem("username");
@@ -38,7 +40,7 @@ function ContextProvider({ children }) {
     }
     loadingBarRef.current.continuousStart();
     try {
-      const response = await fetch(`http://localhost:3000/user/login`, {
+      const response = await fetch(`${BACKEND_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -56,7 +58,7 @@ function ContextProvider({ children }) {
 
         navigate("/app/notes");
       } else {
-        setErrorData(data.user)
+        setErrorData(data.user);
       }
     } catch (error) {
       console.error("Error during login:", error.message);
@@ -67,7 +69,7 @@ function ContextProvider({ children }) {
 
   const hanldeLogout = async (navigate) => {
     loadingBarRef.current.continuousStart();
-    await fetch("http://localhost:3000/user/logout", {
+    await fetch(`${BACKEND_URL}/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -86,7 +88,7 @@ function ContextProvider({ children }) {
   const addNotes = async ({ title, tags, desc }, navigate) => {
     loadingBarRef.current.continuousStart();
     try {
-      const response = await fetch(`http://localhost:3000/user/addNotes`, {
+      const response = await fetch(`${BACKEND_URL}/addNotes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -112,7 +114,7 @@ function ContextProvider({ children }) {
   const fetchNotes = async () => {
     loadingBarRef.current.continuousStart();
     try {
-      const response = await fetch(`http://localhost:3000/user/fetchNotes`, {
+      const response = await fetch(`${BACKEND_URL}/fetchNotes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -138,16 +140,13 @@ function ContextProvider({ children }) {
   const deleteNotes = async (id) => {
     loadingBarRef.current.continuousStart();
     try {
-      const response = await fetch(
-        `http://localhost:3000/user/deleteNotes/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: localStoreValue,
-          },
-        }
-      );
+      const response = await fetch(`${BACKEND_URL}/deleteNotes/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStoreValue,
+        },
+      });
 
       if (response.ok) {
         setNotesData((prevNotes) =>
@@ -189,7 +188,7 @@ function ContextProvider({ children }) {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/user/updateNotes/${inputData1.id}`,
+        `${BACKEND_URL}/updateNotes/${inputData1.id}`,
         {
           method: "PATCH",
           headers: {
@@ -239,7 +238,7 @@ function ContextProvider({ children }) {
           handleAddToGetInput,
           loadingBarRef,
           errorData,
-          setErrorData
+          setErrorData,
         }}
       >
         {children}

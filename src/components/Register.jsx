@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Store } from "../store/contextProvider";
+const BACKEND_URL = import.meta.env.VITE_API_URL;
 function Register() {
   let { loadingBarRef,setErrorData,errorData } = useContext(Store);
   let navigate = useNavigate();
@@ -24,7 +25,7 @@ function Register() {
     formData.append("photo", photo); // Append the file
     loadingBarRef.current.continuousStart();
     try {
-      const response = await fetch(`http://localhost:3000/user/register`, {
+      const response = await fetch(`${BACKEND_URL}/register`, {
         method: "POST",
         body: formData, // Send FormData directly
       });
