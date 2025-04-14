@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import LoadingBar from "react-top-loading-bar"; // Import react-top-loading-bar
+import { Store } from "./Context";
 
 
 const BACKEND_URL = import.meta.env.VITE_API_URL;
