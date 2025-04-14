@@ -15,7 +15,7 @@ function ItemContainer() {
   
   return (
     <>
-      <div className="border absolute inset-0 z-10 mt-9 ">
+      <div className=" absolute inset-0 z-10 mt-9 ">
         <AddButton />
       </div>
       <div className="absolute inset-0 z-10 mt-22 pt-9 flex justify-center items-center flex-wrap overflow-auto gap-3 ">
