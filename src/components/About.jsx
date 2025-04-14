@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
-import { Store } from "../store/contextProvider";
+
 import { useNavigate } from "react-router-dom";
+import { Store } from "../store/Context";
 
 function About() {
   let navigate = useNavigate();

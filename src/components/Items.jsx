@@ -1,8 +1,9 @@
 import React, { useContext } from "react";
 import { FiEdit } from "react-icons/fi";
 import { MdDelete } from "react-icons/md";
-import { Store } from "../store/contextProvider";
+
 import { useNavigate } from "react-router-dom";
+import { Store } from "../store/Context";
 
 function Items({ data }) {
   let navigate = useNavigate()

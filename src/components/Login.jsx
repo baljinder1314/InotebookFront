@@ -1,6 +1,8 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Store } from "../store/contextProvider";
+import { Store } from "../store/Context";
+
+
 
 
 function Login() {

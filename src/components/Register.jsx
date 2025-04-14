@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Store } from "../store/contextProvider";
+import { Store } from "../store/Context";
+
 const BACKEND_URL = import.meta.env.VITE_API_URL;
 function Register() {
   let { loadingBarRef,setErrorData,errorData } = useContext(Store);

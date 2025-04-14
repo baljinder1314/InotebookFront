@@ -2,7 +2,8 @@ import React, { useContext, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { IoMdAddCircle } from "react-icons/io";
-import { Store } from "../store/contextProvider";
+import { Store } from "../store/Context";
+
 
 function AddNotes() {
   let navigate = useNavigate();
