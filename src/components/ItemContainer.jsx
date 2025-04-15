@@ -1,7 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import AddButton from "./AddButton";
-import Items from "./items.jsx";
+import Items from "./Items";
 import { Store } from "../store/Context";
+
 
 
 function ItemContainer() {
