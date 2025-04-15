@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import AddButton from "./AddButton";
-import Items from "./items";
+import Items from "./items.jsx";
 import { Store } from "../store/Context";
 
 
