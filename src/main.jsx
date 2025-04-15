@@ -11,10 +11,10 @@ import AddNotes from "./components/AddNotes.jsx";
 
 import UpdateNote from "./components/UpdateNote.jsx";
 import { LoadingBarContainer } from "react-top-loading-bar";
-import ContextProvider from "./store/contextProvider.jsx";
+import ContextProvider from "./store/ContextProvider.jsx";
 
 const router = createBrowserRouter([
-  { path: "/register", element: <Register /> },
+  { path: "/", element: <Register /> },
   { path: "/login", element: <Login /> },
   { path: "/add", element: <AddNotes /> },
   { path: "/update", element: <UpdateNote /> },
